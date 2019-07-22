@@ -1,5 +1,3 @@
-var Chart = require('chart.js');
-
 var workerHashrateData;
 var workerHashrateChart;
 var workerHistoryMax = 160;
@@ -151,14 +149,14 @@ function updateStats() {
 	totalImmature = statData.immature;
 	totalShares = statData.totalShares;
 
-	// do some calculations
-	var _blocktime = 60; //seconds
+	// do some calculations for mining calculator
+	//var _blocktime = 60; //seconds
 	var _blockReward = 3;
-	var _networkHashRate = parseFloat(statData.networkSols) * 1.2;
+	var _networkHashRate = parseFloat(statData.networkSols) * 1.2; // x by 1.2 for fat
 	var _myHashRate = (totalHash / 1000000) * 2;
 	var luckDays =  ((_networkHashRate / _myHashRate * _blocktime) / (24 * 60 * 60)).toFixed(3);
 	miningCalc = _myHashRate/_networkHashRate * _blockReward * (86400 / _blocktime);
-	
+
 	// update miner stats
 	$("#statsHashrate").text(getReadableHashRateString(totalHash));
 	$("#statsHashrateAvg").text(getReadableHashRateString(calculateAverageHashrate(null)));
@@ -169,6 +167,30 @@ function updateStats() {
 	$("#statsTotalShares").text(totalShares.toFixed(2));
 	$("#minigCalc").text(miningCalc.toFixed(2));
 }
+
+function miningCalculator() {
+
+	//change to pull from api
+	var _arrrnetworkHashRate = 619967;
+	var _kmdnetworkHashRate = 66812483;
+	var _rfoxnetworkHashRate = 185687318;
+
+	//pull block reward from a the pool_config json file??
+    var kmdBR = 3;
+    var arrrBR = 128;
+    var rfoxBR = 1;
+	var _blocktime = 60; //seconds
+	var theirHR = 6375889394 // need to pull from average hash rate
+
+	var Ksum = theirHR/_kmdnetworkHashRate * kmdBR * (86400 / _blocktime);
+	var Asum = theirHR/_arrrnetworkHashRate * arrrBR * (86400 / _blocktime);
+	var Rsum = theirHR/_rfoxnetworkHashRate * rfoxBR * (86400 / _blocktime);	
+	
+	document.getElementById("KMDoutput").innerHTML = Ksum;
+	document.getElementById("ARRRoutput").innerHTML = Asum;
+	document.getElementById("RFOXoutput").innerHTML = Rsum;
+}
+
 function updateWorkerStats() {
 	// update worker stats
 	var i=0;
@@ -250,6 +272,7 @@ statsSource.addEventListener('message', function(e){
 		updateStats();
 		if (!rebuilt) {
 			updateWorkerStats();
+			miningCalculator();
 		}
 	});
 });
