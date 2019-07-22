@@ -1,3 +1,5 @@
+var Chart = require('chart.js');
+
 var workerHashrateData;
 var workerHashrateChart;
 var workerHistoryMax = 160;
