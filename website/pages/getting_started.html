@@ -1,0 +1,73 @@
+<style>
+     /* phone size */
+@media screen and (max-width: 800px) {
+    #menu {
+        width: 100%;
+    }
+}
+</style>
+
+<div id="flex-container">
+    <div id="menu">
+        <div class="menuHeader">
+            Configuration Details
+        </div>
+        
+        <div>
+            {{ for (var pool in it.poolsConfigs) { }}
+                <div class="poolConfig">
+                    <div class="coinInfoHeader">
+                            <span class="coinInfoName">{{=it.poolsConfigs[pool].coin.name}}</span> Configuration
+                    </div>
+
+                    <div class="configDetails" id="configDetails">
+                        <table class="coinInfoTable">
+                            <tr>
+                                <th>Minimum Payment</th>
+                                <td>{{=it.poolsConfigs[pool].paymentProcessing.minimumPayment}}</td>
+                            </tr>
+                            <tr>
+                                <th>Payment Frequency (seconds)</th>
+                                <td>{{=it.poolsConfigs[pool].paymentProcessing.paymentInterval}}</td>
+                            </tr>
+                            <tr>
+                                <th>Fee (%)</th>
+                                <td>{{=it.poolsConfigs[pool].feeAmount}}</td>
+                            </tr>
+                            <tr>
+                                <th>Algorithm</th>
+                                <td>{{=it.poolsConfigs[pool].coin.algorithm}}</td>
+                            </tr>
+                            <tr>
+                                <th>Username:</th>
+                                <td>
+                                    {{ if (it.poolsConfigs[pool].coin && it.poolsConfigs[pool].coin.privateChain) { }}
+                                        your {{=it.poolsConfigs[pool].coin.name}} wallet <b style="color:#C99631;">zS</b> address<br>
+                                    {{ } else if (it.poolsConfigs[pool].coin) { }}
+                                        your {{=it.poolsConfigs[pool].coin.name}} miner wallet address
+                                    {{ } else { }}
+                                        your {{=it.poolsConfigs[pool].coin.name}} miner wallet address
+                                    {{ } }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Password:</th>
+                                <td>ANYTHING</td>
+                            </tr>
+                            <tr>
+                                <th>Server/Stratum:</th>
+                                <td>{{=it.portalConfig.website.stratumHost}}</td>
+                            </tr>
+                            {{ for (var port in it.poolsConfigs[pool].ports) { }}
+                                <tr>
+                                    <th>{{= it.poolsConfigs[pool].ports[port].label ? it.poolsConfigs[pool].ports[port].label : 'URL'}} Port</th>
+                                    <td>{{=port}}</td>
+                                </tr>
+                            {{ } }}
+                        </table>
+                    </div>
+                </div>
+            {{ } }}
+        </div>
+    </div>
+</div>

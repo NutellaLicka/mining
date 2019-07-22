@@ -1,0 +1,15 @@
+{
+    "name": "Rocket test chain",
+    "symbol": "RKT",
+    "algorithm": "equihash",
+    "txfee": 0.0001,
+    "requireShielding": false,
+    "privateChain": true,
+    "feesRaped": true,
+    "peerMagic": "b407ed8b",
+    "explorer": {
+        "txURL": "http://rkt.explorer.dexstats.info/tx/",
+        "blockURL": "http://rkt.explorer.dexstats.info/block/",
+        "_comment_explorer": "This is the coin's explorer full base url for transaction and blocks i.e. (https://explorer.coin.com/tx/). The pool will automatically add the transaction id or block id at the end."
+    }
+}

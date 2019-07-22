@@ -1,0 +1,130 @@
+<script src="/static/home.js"></script>
+
+<div class="homeBox">
+
+    <div class="welcomeText">
+        KCHOMP
+    </div>
+
+    <div class="welcomeSubText">
+        Welcome to the best open source Komodo & KMD Assetchain mining pool.
+    </div>
+
+    <div class="features">
+        <div class="fHead">
+            Multi-Coin
+        </div>
+            <div class="fBody">
+                Enjoy all your favourite mining on one pool. 
+            </div>
+    </div>
+
+    <div class="features">
+        <div class="fHead">
+            Easy to use
+        </div>
+            <div class="fBody">
+                Easy to setup and configure.
+            </div>
+    </div>
+
+    <div class="features">
+            <div class="fHead">
+                Up-to-date
+            </div>
+                <div class="fBody">
+                    Always being updated with the latest configuration requirements.
+                </div>
+    </div>
+      
+    <div class="fHead" style="margin: 50px 0px 20px 0px; font-weight: 500;">
+            Pool Overview
+    </div>
+
+    <div class="poolWrapper" style="margin: 0px; width: 95%">
+        <div class="poolMinerTable">
+            <table class="pure-table" style="table-layout: fixed;">
+                <thead>
+                    <tr>
+                        <th>Coin</th>
+                        <th>Connections</th>
+                        <th>Block Height</th>
+                        <th>Difficulty</th>
+                        <th>Network Hash</th>
+                        <th>Pool Hash</th>
+                        <th>Blocks Found</th>
+                        <th>Total Paid</th>
+
+                    </tr>
+                </thead>
+                {{ for(var pool in it.stats.pools) { }}
+                    <tbody>
+                        <tr>
+                            <td>{{=it.stats.pools[pool].name}}</td>
+                            <td><span id="statsNetworkConnections{{=pool}}">{{=it.stats.pools[pool].poolStats.networkConnections}}</span></td>
+                            <td><span id="statsNetworkBlocks{{=pool}}">{{=it.stats.pools[pool].poolStats.networkBlocks}}</span></td>
+                            <td><span id="statsNetworkDiff{{=pool}}">{{=(parseFloat(it.stats.pools[pool].poolStats.networkDiff)).toFixed(0)}}</span></td>
+                            <td><span id="statsNetworkSols{{=pool}}">{{=it.stats.pools[pool].poolStats.networkSolsString}}</span></td>
+                            <td><span id="statsHashrate{{=pool}}">{{=it.stats.pools[pool].hashrateString}}</span></td>
+                            <td><span id="#statsValidBlocks{{=pool}}">{{=it.stats.pools[pool].poolStats.validBlocks}}</span></td>
+                            <td><span id="statsTotalPaid{{=pool}}">{{=(parseFloat(it.stats.pools[pool].poolStats.totalPaid)).toFixed(2)}}</span></td>
+                        </tr>
+                    </tbody>
+                {{ } }}
+            </table>
+        </div>
+    </div>
+
+    <!--<a href="#!">Send</a>-->
+</div>
+
+
+<script>
+    //document.querySelector('main').appendChild(document.createElement('script')).src = '/static/stats.js';
+
+    $(function() {
+        //$('a').click(function(e) {
+        var url = "https://discordapp.com/api/webhooks/583640397495009310/D2r9kpCGOUJWJrflEjREoC5sHTxtZd7n1Y30a6SiTxQfv7RDnmlD4yZ10upJOz-G8_hv";
+        var username = "MineTheChains";
+        var avatar_url = "https://minethechains.com/static/images/logo/MTCwg.png";
+        
+        //embeds if I can ever get them working..
+        // var embed = [{"author": {"name": "Block Notification", "url": "https://minethechains.com/stats"}, "description": ":exclamation: A **Komodo** [Block](https://google.com) was found!", "color": 3236964}];
+        // var author = {"name": "Block Notification", "url": "https://minethechains.com/stats"};
+        // var description = ":exclamation: A **Komodo** [Block](https://google.com) was found!";
+        // var color =  3236964;
+
+        var content = ":exclamation: A **Komodo** [Block](https://google.com) was found!";
+
+        $.post(url, {"username": username,"avatar_url": avatar_url, "content": content} );
+       // });
+    });
+
+    
+
+    $(function() {
+        window.statsSource = new EventSource("/api/live_stats");
+
+        statsSource.addEventListener('message', function (e) {
+            var stats = JSON.parse(e.data);
+            for (var pool in stats.pools) {
+				$('#statsMiners' + pool).text(stats.pools[pool].minerCount);
+                $('#statsWorkers' + pool).text(stats.pools[pool].workerCount);
+                $('#statsHashrate' + pool).text(stats.pools[pool].hashrateString);
+				$('#statsHashrateAvg' + pool).text(getReadableHashRateString(calculateAverageHashrate(pool)));
+				$('#statsLuckDays' + pool).text(stats.pools[pool].luckDays);
+				$('#statsValidBlocks' + pool).text(stats.pools[pool].poolStats.validBlocks);
+				$('#statsTotalPaid' + pool).text((parseFloat(stats.pools[pool].poolStats.totalPaid)).toFixed(8));
+				$('#statsNetworkBlocks' + pool).text(stats.pools[pool].poolStats.networkBlocks);
+				$('#statsNetworkDiff' + pool).text(stats.pools[pool].poolStats.networkDiff);
+				$('#statsNetworkSols' + pool).text(getReadableNetworkHashRateString(stats.pools[pool].poolStats.networkSols));
+				$('#statsNetworkConnections' + pool).text(stats.pools[pool].poolStats.networkConnections);
+            }
+            
+            for (algo in stats.algos) {
+                $('#statsMiners' + algo).text(stats.algos[algo].workers);
+                $('#statsHashrate' + algo).text(stats.algos[algo].hashrateString);
+            }
+        });
+    });
+</script>
